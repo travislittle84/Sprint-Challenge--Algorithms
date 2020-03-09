@@ -97,8 +97,92 @@ class SortingRobot:
         Sort the robot's list.
         """
         # Fill this out
-        pass
 
+        # Robot - iterative select sort
+
+        # L1: Robot goes through the list, one by one, starting at the beginning, looking for the smallest number.
+        ## Robot picks up a number, moves to the next.
+        ## Robot compares the number it's holding to the one it's standing on
+        ### If the number the robot is standing on is smaller than what it's holding - swap it out
+        ### Continue throughout the list, looking for and swapping out smaller numbers than in its hands
+        # Once the robot hits the end of the list, go back to where the robot started (which will be None (empty)), place the item the robot is holding into the empty spot
+        # Robot moves to next position, picks up the number it's standing on (hands should be empty so no comparision needed)
+        # Robot continues searching and swapping smaller numbers
+        # 
+        # HOW TO KNOW IT"S FINISHED
+        # - If at the last spot, call go back left function like usual
+        # - inside go back left function, the function checks if the robot is standing in an empty spot
+        #   - If robot is standing on an empty spot, it's holding the final number, so it just needs to
+        #      put it back and turn off the light to end the while loop. 
+
+        def initializeBot():
+            self.swap_item()
+            self.move_right()
+        
+        # this helper function moves to next spot and picks up the number there to prepare for
+        # next iteration of the robot's main while loop (which is comparing it's hands to what it's standing on)
+        def intialize_search_subroutine():
+            # move right and pick up next item to start us off for next iteration
+            self.move_right()
+            self.swap_item()
+        
+        # this helper function "resets" the search back to where it started
+        # it also detects if the bot is finished sorting
+        def go_back_until_empty_spot():
+
+            # ARE WE DONE?  check if the spot we're at is empty
+            if self.compare_item() == None:
+                # if it's empty we're done
+                self.swap_item() # put the number back
+                print(f'OFF - My job is complete.')
+                self.set_light_off()    # turn off the light - ends the main while loop
+            else:
+                while self.can_move_left:
+                    # search for the empty spot, which is where the search started for *THIS* iteration of while loop
+                    self.move_left()
+                    if self.compare_item() == None:
+                        self.swap_item() # put the item into its proper place
+                        
+                        # get the bot ready for next iteration of while loop
+                        intialize_search_subroutine()
+                        break
+
+        # helper method to make sure the list is at least 2 - call this at start
+        def check_more_than_one():
+            return self.can_move_right()
+
+        # make sure the list is long enough to sort
+        if check_more_than_one():
+            self.set_light_on()
+            print(f'ON: Beep bop boop - I am going to sort a list')
+        else:
+            print('List must be at least one long to sort')
+        
+        # print(f'Sorting {self._list}')
+
+        initializeBot()
+        
+        while self.light_is_on(): # using the light as an on off switch
+            # beep bop - searching for smallest number, i'm at the corect location with
+            # a number in my hand thanks to either initializeBot or initialize_search_subroutine()
+            # being called in go_back_until_empty_spot()
+            
+            if self.compare_item() == 1:
+                self.swap_item()
+
+            if self.can_move_right():
+                self.move_right()            
+            else:
+                # at the end                
+                if self.compare_item() == 1: # compare before go back
+                    self.swap_item()
+                go_back_until_empty_spot()
+                
+
+                    
+# l = [11, 13, 7, 17, 9, 20, 1, 21, 2, 4, 22, 16, 15, 10, 23, 19, 8, 3, 5, 14, 6, 0, 24, 12, 18]
+# robot = SortingRobot(l)
+# robot.sort()
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
